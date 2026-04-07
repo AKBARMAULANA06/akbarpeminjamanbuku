@@ -14,8 +14,6 @@
     @include('layouts.navigation')
 @endsection
 
-@section('page-title', 'Tambah Buku Baru')
-
 @section('content')
 <div class="container-fluid px-4 py-4" style="background: #faf7f2; min-height: 100vh;">
     <!-- Header dengan desain buku -->
@@ -61,7 +59,7 @@
     @endif
 
     <div class="card border-0" style="border-radius: 32px; background: white; box-shadow: 0 20px 40px -15px rgba(100, 70, 40, 0.2); overflow: hidden;">
-        <!-- Card Header dengan ornamen buku -->
+        <!-- Card Header -->
         <div class="card-header bg-transparent border-0 p-4" style="border-bottom: 2px solid #f0e7d8;">
             <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-book-half" style="color: #8b5a2b;"></i>
@@ -77,7 +75,7 @@
             <form action="{{ route($routePrefix . '.alat.store') }}" method="POST" enctype="multipart/form-data" id="formTambahBuku">
                 @csrf
                 
-                <!-- ISBN / Kode Buku -->
+                <!-- Kode Buku & Kategori -->
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="kode_alat" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
@@ -85,7 +83,7 @@
                         </label>
                         <input type="text" class="form-control @error('kode_alat') is-invalid @enderror" 
                                id="kode_alat" name="kode_alat" value="{{ old('kode_alat') }}" 
-                               placeholder="Contoh: 978-602-1234-56-7" required
+                               placeholder="Contoh: BUKU001 atau 978-602-1234-56-7" required
                                style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">
                         <small class="text-muted">
                             <i class="bi bi-info-circle me-1"></i>
@@ -96,7 +94,6 @@
                         @enderror
                     </div>
                     
-                    <!-- Kategori Buku -->
                     <div class="col-md-6">
                         <label for="kategori_id" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
                             <i class="bi bi-tag me-1" style="color: #8b5a2b;"></i>Kategori Buku *
@@ -131,78 +128,66 @@
                     @enderror
                 </div>
                 
-                <!-- Penulis / Pengarang -->
-                <div class="mb-4">
-                    <label for="penulis" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
-                        <i class="bi bi-pencil me-1" style="color: #8b5a2b;"></i>Penulis
-                    </label>
-                    <input type="text" class="form-control @error('penulis') is-invalid @enderror" 
-                           id="penulis" name="penulis" value="{{ old('penulis') }}" 
-                           placeholder="Nama penulis buku"
-                           style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">
-                    @error('penulis')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                
-                <!-- Penerbit -->
-                <div class="mb-4">
-                    <label for="penerbit" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
-                        <i class="bi bi-building me-1" style="color: #8b5a2b;"></i>Penerbit
-                    </label>
-                    <input type="text" class="form-control @error('penerbit') is-invalid @enderror" 
-                           id="penerbit" name="penerbit" value="{{ old('penerbit') }}" 
-                           placeholder="Nama penerbit"
-                           style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">
-                    @error('penerbit')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                
-                <!-- Tahun Terbit -->
-                <div class="mb-4">
-                    <label for="tahun_terbit" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
-                        <i class="bi bi-calendar me-1" style="color: #8b5a2b;"></i>Tahun Terbit
-                    </label>
-                    <input type="number" min="1900" max="{{ date('Y') }}" class="form-control @error('tahun_terbit') is-invalid @enderror" 
-                           id="tahun_terbit" name="tahun_terbit" value="{{ old('tahun_terbit', date('Y')) }}" 
-                           placeholder="2024"
-                           style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">
-                    @error('tahun_terbit')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                
-                <!-- Deskripsi / Sinopsis -->
-                <div class="mb-4">
-                    <label for="deskripsi" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
-                        <i class="bi bi-card-text me-1" style="color: #8b5a2b;"></i>Sinopsis / Deskripsi
-                    </label>
-                    <textarea class="form-control @error('deskripsi') is-invalid @enderror" 
-                              id="deskripsi" name="deskripsi" rows="4" 
-                              placeholder="Tuliskan sinopsis atau deskripsi singkat tentang buku"
-                              style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">{{ old('deskripsi') }}</textarea>
-                    @error('deskripsi')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                
+                <!-- Penulis & Penerbit -->
                 <div class="row mb-4">
-                    <!-- Denda per Hari -->
+                    <div class="col-md-6">
+                        <label for="penulis" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
+                            <i class="bi bi-pencil me-1" style="color: #8b5a2b;"></i>Penulis *
+                        </label>
+                        <input type="text" class="form-control @error('penulis') is-invalid @enderror" 
+                               id="penulis" name="penulis" value="{{ old('penulis') }}" 
+                               placeholder="Nama penulis buku" required
+                               style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">
+                        @error('penulis')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="penerbit" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
+                            <i class="bi bi-building me-1" style="color: #8b5a2b;"></i>Penerbit *
+                        </label>
+                        <input type="text" class="form-control @error('penerbit') is-invalid @enderror" 
+                               id="penerbit" name="penerbit" value="{{ old('penerbit') }}" 
+                               placeholder="Nama penerbit" required
+                               style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">
+                        @error('penerbit')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
+                <!-- Tahun Terbit & Denda -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="tahun_terbit" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
+                            <i class="bi bi-calendar me-1" style="color: #8b5a2b;"></i>Tahun Terbit *
+                        </label>
+                        <input type="number" min="1900" max="{{ date('Y') }}" class="form-control @error('tahun_terbit') is-invalid @enderror" 
+                               id="tahun_terbit" name="tahun_terbit" value="{{ old('tahun_terbit', date('Y')) }}" 
+                               placeholder="2024" required
+                               style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">
+                        @error('tahun_terbit')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
                     <div class="col-md-6">
                         <label for="harga_sewa_per_hari" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
                             <i class="bi bi-cash me-1" style="color: #8b5a2b;"></i>Denda per Hari (Rp) *
                         </label>
                         <input type="number" min="0" step="1000" class="form-control @error('harga_sewa_per_hari') is-invalid @enderror" 
-                               id="harga_sewa_per_hari" name="harga_sewa_per_hari" value="{{ old('harga_sewa_per_hari', 0) }}" required
+                               id="harga_sewa_per_hari" name="harga_sewa_per_hari" value="{{ old('harga_sewa_per_hari', 2000) }}" required
                                style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">
                         <small class="text-muted">Denda keterlambatan per hari (contoh: 2000)</small>
                         @error('harga_sewa_per_hari')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    
-                    <!-- Stok Total (Eksemplar) -->
+                </div>
+                
+                <!-- Stok Total & Kondisi -->
+                <div class="row mb-4">
                     <div class="col-md-6">
                         <label for="stok_total" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
                             <i class="bi bi-layers me-1" style="color: #8b5a2b;"></i>Jumlah Eksemplar *
@@ -215,21 +200,34 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    
+                    <div class="col-md-6">
+                        <label for="kondisi" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
+                            <i class="bi bi-clipboard-check me-1" style="color: #8b5a2b;"></i>Kondisi Buku *
+                        </label>
+                        <select class="form-select @error('kondisi') is-invalid @enderror" 
+                                id="kondisi" name="kondisi" required
+                                style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">
+                            <option value="baik" {{ old('kondisi') == 'baik' ? 'selected' : '' }}>Baik (Baru/Layak)</option>
+                            <option value="rusak_ringan" {{ old('kondisi') == 'rusak_ringan' ? 'selected' : '' }}>Rusak Ringan</option>
+                            <option value="rusak_berat" {{ old('kondisi') == 'rusak_berat' ? 'selected' : '' }}>Rusak Berat (Perlu Perbaikan)</option>
+                        </select>
+                        @error('kondisi')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
                 
-                <!-- Kondisi Buku -->
+                <!-- Deskripsi -->
                 <div class="mb-4">
-                    <label for="kondisi" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
-                        <i class="bi bi-clipboard-check me-1" style="color: #8b5a2b;"></i>Kondisi Buku *
+                    <label for="deskripsi" class="form-label fw-medium mb-2" style="color: #4a3b2c;">
+                        <i class="bi bi-card-text me-1" style="color: #8b5a2b;"></i>Sinopsis / Deskripsi
                     </label>
-                    <select class="form-select @error('kondisi') is-invalid @enderror" 
-                            id="kondisi" name="kondisi" required
-                            style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">
-                        <option value="baik" {{ old('kondisi') == 'baik' ? 'selected' : '' }}>Baik (Baru/Layak)</option>
-                        <option value="rusak_ringan" {{ old('kondisi') == 'rusak_ringan' ? 'selected' : '' }}>Rusak Ringan</option>
-                        <option value="rusak_berat" {{ old('kondisi') == 'rusak_berat' ? 'selected' : '' }}>Rusak Berat (Perlu Perbaikan)</option>
-                    </select>
-                    @error('kondisi')
+                    <textarea class="form-control @error('deskripsi') is-invalid @enderror" 
+                              id="deskripsi" name="deskripsi" rows="4" 
+                              placeholder="Tuliskan sinopsis atau deskripsi singkat tentang buku"
+                              style="padding: 12px 16px; border-radius: 16px; border: 1.5px solid #e0d5c5; background: #fefcf9;">{{ old('deskripsi') }}</textarea>
+                    @error('deskripsi')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -286,7 +284,7 @@
             </form>
         </div>
         
-        <!-- Card Footer dengan watermark buku -->
+        <!-- Card Footer -->
         <div class="card-footer bg-transparent border-0 p-4 text-end" style="border-top: 2px solid #f0e7d8;">
             <small class="text-muted">
                 <i class="bi bi-info-circle me-1"></i>
@@ -379,6 +377,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const kategori = document.getElementById('kategori_id').value;
         if (!kategori) {
             errorMessages.push('Kategori harus dipilih');
+            isValid = false;
+        }
+
+        // Validasi penulis
+        const penulis = document.getElementById('penulis').value.trim();
+        if (!penulis) {
+            errorMessages.push('Penulis harus diisi');
+            isValid = false;
+        }
+
+        // Validasi penerbit
+        const penerbit = document.getElementById('penerbit').value.trim();
+        if (!penerbit) {
+            errorMessages.push('Penerbit harus diisi');
             isValid = false;
         }
 

@@ -8,7 +8,6 @@
     @else
         @include('admin.components.sidebar')
     @endif
-@endsection
 
 @section('navbar')
     @include('layouts.navigation')
@@ -50,25 +49,15 @@
 
     <div class="card border-0" style="border-radius: 32px; background: white; box-shadow: 0 20px 40px -15px rgba(100, 70, 40, 0.2);">
         <div class="card-body p-4">
-            @php
-                $routePrefix = auth()->user()->role === 'petugas' ? 'petugas' : 'admin';
-            @endphp
-            
-            <form action="{{ route($routePrefix . '.alat.update', $alat->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('petugas.alat.update', $alat->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Kode Buku</label>
-                        @if(auth()->user()->role === 'petugas')
-                            <input type="text" class="form-control" value="{{ $alat->kode_alat }}" readonly style="background-color: #e9ecef;">
-                            <small class="text-muted">Kode buku tidak dapat diubah</small>
-                        @else
-                            <input type="text" name="kode_alat" class="form-control @error('kode_alat') is-invalid @enderror" 
-                                   value="{{ old('kode_alat', $alat->kode_alat) }}" required>
-                            @error('kode_alat')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        @endif
+                        <input type="text" class="form-control" value="{{ $alat->kode_alat }}" readonly style="background-color: #e9ecef;">
+                        <small class="text-muted">Kode buku tidak dapat diubah</small>
                     </div>
                     
                     <div class="col-md-6 mb-3">
@@ -162,20 +151,13 @@
                     @error('foto')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 
-                <!-- Hidden field stok_tersedia untuk admin -->
-                @if(auth()->user()->role === 'admin')
-                    <input type="hidden" name="stok_tersedia" value="{{ $alat->stok_tersedia }}">
-                @endif
+                <input type="hidden" name="stok_tersedia" value="{{ $alat->stok_tersedia }}">
                 
-                <!-- Tombol Aksi -->
                 <div class="d-flex gap-3 justify-content-end mt-4">
-                    <a href="{{ route($routePrefix . '.alat.index') }}" 
-                       class="btn px-5 py-3" 
-                       style="background: #f0e7d8; color: #8b5a2b; border-radius: 16px; font-weight: 600;">
+                    <a href="{{ route('petugas.alat.index') }}" class="btn btn-secondary px-5 py-3">
                         <i class="bi bi-arrow-left me-2"></i>Kembali
                     </a>
-                    <button type="submit" class="btn px-5 py-3" 
-                            style="background: linear-gradient(135deg, #8b5a2b 0%, #a8753a 100%); color: white; border-radius: 16px; font-weight: 600; border: none; box-shadow: 0 10px 20px -5px rgba(139, 90, 43, 0.3);">
+                    <button type="submit" class="btn px-5 py-3" style="background: linear-gradient(135deg, #8b5a2b 0%, #a8753a 100%); color: white;">
                         <i class="bi bi-check-lg me-2"></i>Update Buku
                     </button>
                 </div>

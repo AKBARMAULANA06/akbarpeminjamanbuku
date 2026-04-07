@@ -1,5 +1,5 @@
 <nav class="sidebar" style="background: linear-gradient(180deg, #4a3b2c 0%, #2c1f14 100%); color: #e8d9c8; width: 280px; height: 100vh; position: fixed; left: 0; top: 0; overflow-y: auto; box-shadow: 5px 0 30px rgba(0,0,0,0.3); z-index: 1000;">
-    <!-- Sidebar Header dengan desain buku -->
+    <!-- Sidebar Header -->
     <div class="sidebar-header p-4" style="border-bottom: 2px solid #8b5a2b;">
         <div class="d-flex align-items-center gap-3">
             <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #8b5a2b 0%, #a8753a 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
@@ -76,16 +76,15 @@
         <a href="{{ route('petugas.transaksi.index') }}" class="nav-link d-flex align-items-center gap-3 px-3 py-2 mb-1 rounded-3 {{ request()->routeIs('petugas.transaksi.*') ? 'active' : '' }}"
            style="color: {{ request()->routeIs('petugas.transaksi.*') ? '#f0e7d8' : '#c9b9a8' }}; background: {{ request()->routeIs('petugas.transaksi.*') ? '#8b5a2b' : 'transparent' }}; text-decoration: none;">
             <i class="bi bi-file-earmark-text fs-5" style="width: 20px;"></i>
-            <span class="fw-medium">Laporan</span>
+            <span class="fw-medium">Laporan Transaksi</span>
             @if(request()->routeIs('petugas.transaksi.*'))
                 <i class="bi bi-bookmark-fill ms-auto" style="font-size: 0.8rem; color: #f0e7d8;"></i>
             @endif
         </a>
     </div>
 
-    <!-- Sidebar Footer dengan user profile dan hak cipta -->
+    <!-- Sidebar Footer -->
     <div class="sidebar-footer" style="border-top: 1px solid #8b5a2b; position: absolute; bottom: 0; left: 0; right: 0; background: #2c1f14;">
-        <!-- User Profile -->
         <div class="p-3">
             <div class="d-flex align-items-center gap-3">
                 <div class="d-flex align-items-center justify-content-center" 
@@ -101,7 +100,6 @@
             </div>
         </div>
         
-        <!-- Hak Cipta -->
         <div class="text-center py-2" style="border-top: 1px solid rgba(139, 90, 43, 0.3);">
             <small style="color: #8b7a6b; font-size: 0.7rem;">
                 <i class="bi bi-c-circle me-1" style="font-size: 0.6rem;"></i>
@@ -112,13 +110,22 @@
 </nav>
 
 <style>
-/* Hover effect sederhana */
+/* Hanya untuk sidebar saja yang tanpa animasi */
+.sidebar * {
+    animation: none !important;
+    transition: none !important;
+}
+
+.sidebar .nav-link {
+    transition: background 0.2s ease !important; /* Izinkan transisi hover */
+}
+
 .sidebar .nav-link:hover {
     background: #5a3e2b !important;
     color: #f0e7d8 !important;
 }
 
-/* Custom scrollbar minimal */
+/* Custom scrollbar */
 .sidebar::-webkit-scrollbar {
     width: 4px;
 }
@@ -134,12 +141,6 @@
 
 .sidebar::-webkit-scrollbar-thumb:hover {
     background: #a8753a;
-}
-
-/* Hilangkan semua animasi */
-* {
-    animation: none !important;
-    transition: none !important;
 }
 
 /* Responsive */

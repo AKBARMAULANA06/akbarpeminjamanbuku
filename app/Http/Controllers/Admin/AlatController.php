@@ -12,16 +12,30 @@ use Illuminate\Validation\Rule;
 
 class AlatController extends Controller
 {
+    // Helper untuk menentukan route prefix berdasarkan role
+    private function getRoutePrefix()
+    {
+        return auth()->user()->role === 'petugas' ? 'petugas' : 'admin';
+    }
+    
+    // Helper untuk menentukan view folder berdasarkan role
+    private function getViewPrefix()
+    {
+        return auth()->user()->role === 'petugas' ? 'petugas' : 'admin';
+    }
+    
     public function index()
     {
         $alats = Alat::with('kategori')->paginate(15);
-        return view('admin.pages.alat.index', compact('alats'));
+        $viewPrefix = $this->getViewPrefix();
+        return view("{$viewPrefix}.pages.alat.index", compact('alats'));
     }
 
     public function create()
     {
         $kategoris = Kategori::all();
-        return view('admin.pages.alat.create', compact('kategoris'));
+        $viewPrefix = $this->getViewPrefix();
+        return view("{$viewPrefix}.pages.alat.create", compact('kategoris'));
     }
 
     public function store(Request $request)
@@ -61,23 +75,15 @@ class AlatController extends Controller
             
             LogService::log('create_alat', "Menambahkan alat: {$alat->nama_alat} ({$alat->kode_alat}) dengan denda Rp " . number_format($alat->harga_sewa_per_hari, 0, ',', '.'));
 
-            return redirect()->route('admin.alat.index')
-                ->with('success', 'Alat berhasil ditambahkan');
+            $routePrefix = $this->getRoutePrefix();
+            return redirect()->route("{$routePrefix}.alat.index")
+                ->with('success', 'Buku berhasil ditambahkan');
 
         } catch (\Illuminate\Database\QueryException $e) {
-            // Tangani error database
             if ($e->getCode() == 23000) {
-                // Cek apakah error karena unique constraint tahun_terbit
-                if (strpos($e->getMessage(), 'tahun_terbit_unique') !== false) {
-                    return back()
-                        ->with('error', 'Terjadi kesalahan: Constraint unique pada tahun terbit masih ada di database. Silakan hapus dengan menjalankan SQL: ALTER TABLE alat DROP INDEX alat_tahun_terbit_unique;')
-                        ->withInput();
-                }
-                
-                // Error duplicate kode_alat
                 if (strpos($e->getMessage(), 'kode_alat_unique') !== false) {
                     return back()
-                        ->with('error', 'Kode alat sudah digunakan. Silakan gunakan kode lain.')
+                        ->with('error', 'Kode buku sudah digunakan. Silakan gunakan kode lain.')
                         ->withInput();
                 }
             }
@@ -95,39 +101,62 @@ class AlatController extends Controller
 
     public function show(Alat $alat)
     {
-        return view('admin.pages.alat.show', compact('alat'));
+        $viewPrefix = $this->getViewPrefix();
+        return view("{$viewPrefix}.pages.alat.show", compact('alat'));
     }
 
     public function edit(Alat $alat)
     {
         $kategoris = Kategori::all();
-        return view('admin.pages.alat.edit', compact('alat', 'kategoris'));
+        $viewPrefix = $this->getViewPrefix();
+        return view("{$viewPrefix}.pages.alat.edit", compact('alat', 'kategoris'));
     }
 
     public function update(Request $request, Alat $alat)
     {
         try {
-            $validated = $request->validate([
+            $isPetugas = auth()->user()->role === 'petugas';
+            
+            // Validasi dasar
+            $rules = [
                 'kategori_id' => 'required|exists:kategori,id',
-                'kode_alat' => [
-                    'required',
-                    'max:50',
-                    Rule::unique('alat', 'kode_alat')->ignore($alat->id)
-                ],
                 'nama_alat' => 'required|max:255',
                 'penulis' => 'required|max:255',
                 'penerbit' => 'required|max:255',
                 'tahun_terbit' => 'required|digits:4|integer|min:1900|max:' . date('Y'),
                 'deskripsi' => 'nullable|string',
                 'stok_total' => 'required|integer|min:0',
-                'stok_tersedia' => 'required|integer|min:0|lte:stok_total',
                 'harga_sewa_per_hari' => 'required|integer|min:0',
                 'kondisi' => 'required|in:baik,rusak_ringan,rusak_berat',
                 'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
+            ];
+            
+            // Admin bisa edit kode_alat, Petugas tidak
+            if (!$isPetugas) {
+                $rules['kode_alat'] = [
+                    'required',
+                    'max:50',
+                    Rule::unique('alat', 'kode_alat')->ignore($alat->id)
+                ];
+                $rules['stok_tersedia'] = 'required|integer|min:0|lte:stok_total';
+            }
+            
+            $validated = $request->validate($rules);
+            
+            // Validasi tambahan untuk petugas
+            if ($isPetugas) {
+                // Petugas tidak bisa mengubah stok_tersedia
+                $validated['stok_tersedia'] = $alat->stok_tersedia;
+                
+                // Cek stok tidak boleh kurang dari stok tersedia
+                if ($request->stok_total < $alat->stok_tersedia) {
+                    return back()
+                        ->with('error', 'Stok total tidak boleh kurang dari stok yang tersedia saat ini (' . $alat->stok_tersedia . ')')
+                        ->withInput();
+                }
+            }
 
             if ($request->hasFile('foto')) {
-                // Delete old files
                 if ($alat->foto) {
                     Storage::disk('public')->delete($alat->foto);
                 }
@@ -146,10 +175,11 @@ class AlatController extends Controller
 
             $alat->update($validated);
             
-            LogService::log('update_alat', "Mengupdate alat: {$alat->nama_alat} ({$alat->kode_alat}) dengan denda Rp " . number_format($alat->harga_sewa_per_hari, 0, ',', '.'));
+            LogService::log('update_alat', "Mengupdate alat: {$alat->nama_alat} ({$alat->kode_alat})");
 
-            return redirect()->route('admin.alat.index')
-                ->with('success', 'Alat berhasil diupdate');
+            $routePrefix = $this->getRoutePrefix();
+            return redirect()->route("{$routePrefix}.alat.index")
+                ->with('success', 'Buku berhasil diupdate');
                 
         } catch (\Exception $e) {
             return back()
@@ -160,6 +190,11 @@ class AlatController extends Controller
 
     public function destroy(Alat $alat)
     {
+        // Petugas tidak boleh menghapus
+        if (auth()->user()->role === 'petugas') {
+            return back()->with('error', 'Petugas tidak memiliki izin untuk menghapus buku!');
+        }
+        
         try {
             if ($alat->foto) {
                 Storage::disk('public')->delete($alat->foto);
@@ -172,11 +207,11 @@ class AlatController extends Controller
             LogService::log('delete_alat', "Menghapus alat: {$nama} ({$kode})");
     
             return redirect()->route('admin.alat.index')
-                ->with('success', 'Alat berhasil dihapus');
+                ->with('success', 'Buku berhasil dihapus');
                 
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() == 23000) {
-                return back()->with('error', 'Gagal menghapus! Alat ini sedang digunakan dalam transaksi peminjaman.');
+                return back()->with('error', 'Gagal menghapus! Buku ini sedang digunakan dalam transaksi peminjaman.');
             }
             return back()->with('error', 'Terjadi kesalahan database: ' . $e->getMessage());
         } catch (\Exception $e) {
