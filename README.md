@@ -3,832 +3,715 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Web - Administrasi</title>
+    <title>Pustaka Admin Panel - Dashboard Perpustakaan</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --success-color: #4cc9f0;
-            --warning-color: #f72585;
-            --dark-color: #1d3557;
-            --light-color: #f8f9fa;
-            --gray-color: #6c757d;
-            --sidebar-width: 250px;
-            --header-height: 70px;
-            --card-border-radius: 12px;
-            --transition-speed: 0.3s;
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
         }
-        
+
         body {
-            background-color: #f5f7fb;
-            color: #333;
+            background: #f5efe7;
             display: flex;
             min-height: 100vh;
         }
-        
-        /* Sidebar Styles */
+
+        /* ========= SIDEBAR - WARNA COKLAT TUA ========= */
         .sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--dark-color);
-            color: white;
+            width: 260px;
+            background: #5c3e2b;
+            color: #f5e6d3;
             position: fixed;
             height: 100vh;
-            padding: 20px 0;
-            transition: width var(--transition-speed);
-            overflow: hidden;
+            transition: all 0.3s ease;
             z-index: 100;
+            overflow-y: auto;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
         }
-        
+
         .sidebar.collapsed {
             width: 70px;
         }
-        
-        .logo-container {
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 24px;
+        }
+
+        .logo-area {
             display: flex;
             align-items: center;
-            padding: 0 20px;
-            margin-bottom: 30px;
+            gap: 12px;
         }
-        
-        .logo {
-            font-size: 28px;
-            margin-right: 15px;
-            color: var(--success-color);
-        }
-        
-        .logo-text {
-            font-size: 22px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-        
-        .sidebar.collapsed .logo-text {
-            display: none;
-        }
-        
-        .sidebar-menu {
-            list-style: none;
-        }
-        
-        .menu-item {
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        
-        .menu-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .menu-item.active {
-            background-color: var(--primary-color);
-            border-left: 4px solid var(--success-color);
-        }
-        
-        .menu-icon {
-            font-size: 20px;
-            margin-right: 15px;
-            width: 24px;
-            text-align: center;
-        }
-        
-        .sidebar.collapsed .menu-text {
-            display: none;
-        }
-        
-        /* Main Content Styles */
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            transition: margin-left var(--transition-speed);
-        }
-        
-        .main-content.expanded {
-            margin-left: 70px;
-        }
-        
-        /* Header Styles */
-        .header {
-            height: var(--header-height);
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 30px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-        
-        .toggle-sidebar {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: var(--dark-color);
-            cursor: pointer;
-            margin-right: 20px;
-            padding: 5px;
-            border-radius: 5px;
-            transition: background-color 0.2s;
-        }
-        
-        .toggle-sidebar:hover {
-            background-color: #f0f0f0;
-        }
-        
-        .page-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-        
-        .header-right {
-            display: flex;
-            align-items: center;
-        }
-        
-        .search-box {
-            position: relative;
-            margin-right: 20px;
-        }
-        
-        .search-box input {
-            padding: 10px 15px 10px 40px;
-            border-radius: 30px;
-            border: 1px solid #ddd;
-            outline: none;
-            width: 250px;
-            transition: width 0.3s;
-        }
-        
-        .search-box input:focus {
-            width: 300px;
-            border-color: var(--primary-color);
-        }
-        
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray-color);
-        }
-        
-        .user-profile {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-        
-        .user-avatar {
+
+        .logo-icon {
+            background: #d4a373;
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 20px;
             color: white;
-            font-weight: bold;
-            margin-right: 10px;
         }
-        
-        .user-name {
-            font-weight: 500;
-            margin-right: 5px;
-        }
-        
-        /* Content Area */
-        .content-area {
-            padding: 30px;
-        }
-        
-        .welcome-banner {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
             color: white;
-            border-radius: var(--card-border-radius);
-            padding: 25px;
-            margin-bottom: 30px;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar.collapsed .logo-text,
+        .sidebar.collapsed .menu-text {
+            display: none;
+        }
+
+        .nav-section {
+            padding: 0 16px;
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            color: #c9a87b;
+            margin-bottom: 14px;
+            padding-left: 12px;
+        }
+
+        .sidebar.collapsed .section-title {
+            text-align: center;
+            font-size: 9px;
+            padding-left: 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #e8d5bc;
+        }
+
+        .menu-item i {
+            width: 22px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .menu-item:hover {
+            background: #7a5538;
+            color: white;
+        }
+
+        .menu-item.active {
+            background: #d4a373;
+            color: white;
+            box-shadow: 0 4px 10px rgba(212, 163, 115, 0.3);
+        }
+
+        /* ========= MAIN CONTENT ========= */
+        .main-panel {
+            flex: 1;
+            margin-left: 260px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-panel.expanded {
+            margin-left: 70px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: white;
+            padding: 12px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
-        
-        .welcome-text h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+
+        .menu-toggle {
+            background: #f5efe7;
+            border: none;
+            font-size: 1.2rem;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #5c3e2b;
         }
-        
-        .welcome-text p {
-            opacity: 0.9;
-            font-size: 16px;
+
+        .menu-toggle:hover {
+            background: #e8ddcf;
         }
-        
-        .stats-cards {
+
+        .page-head {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #5c3e2b;
+            margin-left: 16px;
+        }
+
+        .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-badge {
+            background: #f5efe7;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #5c3e2b;
+        }
+
+        .avatar {
+            background: #d4a373;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Content Area */
+        .dashboard-content {
+            padding: 28px;
+        }
+
+        /* Welcome Banner - warna coklat */
+        .welcome-card {
+            background: linear-gradient(135deg, #5c3e2b 0%, #4a3222 100%);
+            border-radius: 20px;
+            padding: 24px 32px;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 6px 14px rgba(92, 62, 43, 0.2);
+        }
+
+        .welcome-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .date-badge {
+            background: rgba(212, 163, 115, 0.25);
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(212, 163, 115, 0.5);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-bottom: 28px;
         }
-        
-        .stat-card {
-            background-color: white;
-            border-radius: var(--card-border-radius);
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s;
-            border-top: 4px solid var(--primary-color);
+
+        .stat-block {
+            background: white;
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s;
+            border: 1px solid #e8ddd0;
         }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
+
+        .stat-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
-        
-        .stat-card:nth-child(2) {
-            border-top-color: var(--success-color);
-        }
-        
-        .stat-card:nth-child(3) {
-            border-top-color: var(--warning-color);
-        }
-        
-        .stat-card:nth-child(4) {
-            border-top-color: #7209b7;
-        }
-        
+
         .stat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 14px;
         }
-        
-        .stat-title {
-            font-size: 16px;
-            color: var(--gray-color);
+
+        .stat-header span:first-child {
+            color: #8b6b4f;
             font-weight: 500;
-        }
-        
-        .stat-icon {
-            font-size: 24px;
-            color: var(--primary-color);
-        }
-        
-        .stat-card:nth-child(2) .stat-icon {
-            color: var(--success-color);
-        }
-        
-        .stat-card:nth-child(3) .stat-icon {
-            color: var(--warning-color);
-        }
-        
-        .stat-card:nth-child(4) .stat-icon {
-            color: #7209b7;
-        }
-        
-        .stat-value {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .stat-change {
             font-size: 14px;
+        }
+
+        .stat-icon {
+            font-size: 28px;
+            color: #d4a373;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: #5c3e2b;
+            margin-bottom: 8px;
+        }
+
+        .stat-trend {
+            font-size: 12px;
             display: flex;
             align-items: center;
+            gap: 6px;
         }
-        
-        .stat-change.positive {
-            color: #2ecc71;
-        }
-        
-        .stat-change.negative {
-            color: #e74c3c;
-        }
-        
-        .charts-container {
+
+        .trend-up { color: #10b981; }
+        .trend-down { color: #ef4444; }
+
+        /* Double Section */
+        .double-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 24px;
+            margin-bottom: 28px;
         }
-        
-        .chart-card {
-            background-color: white;
-            border-radius: var(--card-border-radius);
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+        .quick-actions-card, .recent-card {
+            background: white;
+            border-radius: 20px;
+            padding: 22px 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e8ddd0;
         }
-        
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #5c3e2b;
             margin-bottom: 20px;
-        }
-        
-        .chart-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-        
-        .chart-actions {
             display: flex;
+            align-items: center;
             gap: 10px;
         }
-        
-        .chart-btn {
-            background: none;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 5px 10px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-        
-        .chart-btn:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .chart-btn.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-        
-        .chart-placeholder {
-            height: 250px;
+
+        .action-btn {
+            background: #fefaf5;
+            border: 1px solid #e8ddd0;
+            padding: 14px 18px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            color: var(--gray-color);
-        }
-        
-        .recent-activity {
-            background-color: white;
-            border-radius: var(--card-border-radius);
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-        
-        .activity-title {
-            font-size: 20px;
+            gap: 14px;
             font-weight: 600;
-            color: var(--dark-color);
-            margin-bottom: 20px;
+            color: #5c3e2b;
+            transition: all 0.2s;
+            cursor: pointer;
         }
-        
+
+        .action-btn i {
+            width: 24px;
+            color: #d4a373;
+            font-size: 1.1rem;
+        }
+
+        .action-btn:hover {
+            background: #f5efe7;
+            border-color: #d4a373;
+            transform: translateX(5px);
+        }
+
         .activity-list {
             list-style: none;
         }
-        
+
         .activity-item {
             display: flex;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0e8df;
         }
-        
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-        
+
         .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: rgba(67, 97, 238, 0.1);
+            width: 38px;
+            height: 38px;
+            background: #f5efe7;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 15px;
-            color: var(--primary-color);
-            font-size: 18px;
+            color: #d4a373;
         }
-        
-        .activity-details {
-            flex: 1;
-        }
-        
+
         .activity-text {
+            font-weight: 500;
             margin-bottom: 5px;
-            line-height: 1.4;
+            color: #5c3e2b;
         }
-        
+
         .activity-time {
-            font-size: 14px;
-            color: var(--gray-color);
+            font-size: 11px;
+            color: #a88b6e;
         }
-        
-        /* Responsive Styles */
-        @media (max-width: 1200px) {
-            .charts-container {
-                grid-template-columns: 1fr;
-            }
+
+        /* Transaction Card */
+        .transaction-card {
+            background: white;
+            border-radius: 20px;
+            padding: 22px;
+            border: 1px solid #e8ddd0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
-        
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 70px;
-            }
-            
-            .sidebar .logo-text,
-            .sidebar .menu-text {
-                display: none;
-            }
-            
-            .main-content {
-                margin-left: 70px;
-            }
-            
-            .search-box input {
-                width: 40px;
-                padding-left: 40px;
-            }
-            
-            .search-box input:focus {
-                width: 200px;
-            }
+
+        .badge-pending {
+            background: #f5efe7;
+            color: #5c3e2b;
+            border-radius: 30px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
         }
-        
+
+        hr {
+            margin: 18px 0;
+            border-color: #f0e8df;
+        }
+
+        .loan-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
+
+        .lihat-link {
+            color: #d4a373;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .toast-msg {
+            margin-top: 16px;
+            font-size: 13px;
+            color: #d4a373;
+            font-weight: 500;
+        }
+
+        @media (max-width: 1100px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .double-section { grid-template-columns: 1fr; }
+        }
+
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .header {
-                padding: 0 15px;
-            }
-            
-            .content-area {
-                padding: 15px;
-            }
-            
-            .welcome-banner {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .welcome-text h1 {
-                font-size: 24px;
-            }
-            
-            .stats-cards {
-                grid-template-columns: 1fr;
-            }
-            
-            .charts-container {
-                grid-template-columns: 1fr;
-            }
+            .sidebar { transform: translateX(-100%); position: fixed; }
+            .sidebar.mobile-open { transform: translateX(0); }
+            .main-panel { margin-left: 0 !important; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .welcome-card { flex-direction: column; align-items: flex-start; gap: 12px; }
         }
     </style>
 </head>
 <body>
-    
-    <aside class="sidebar" id="sidebar">
-        <div class="logo-container">
-            <div class="logo">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="logo-text">DashboardPro</div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-chalkboard-user"></i></div>
+            <div class="logo-text">Pustaka Admin</div>
         </div>
-        
-        <ul class="sidebar-menu">
-            <li class="menu-item active">
-                <div class="menu-icon"><i class="fas fa-home"></i></div>
-                <div class="menu-text">Dashboard</div>
-            </li>
-            <li class="menu-item">
-                <div class="menu-icon"><i class="fas fa-chart-bar"></i></div>
-                <div class="menu-text">Analytics</div>
-            </li>
-            <li class="menu-item">
-                <div class="menu-icon"><i class="fas fa-users"></i></div>
-                <div class="menu-text">Users</div>
-            </li>
-            <li class="menu-item">
-                <div class="menu-icon"><i class="fas fa-shopping-cart"></i></div>
-                <div class="menu-text">Orders</div>
-            </li>
-            <li class="menu-item">
-                <div class="menu-icon"><i class="fas fa-cog"></i></div>
-                <div class="menu-text">Settings</div>
-            </li>
-            <li class="menu-item">
-                <div class="menu-icon"><i class="fas fa-question-circle"></i></div>
-                <div class="menu-text">Help & Support</div>
-            </li>
-        </ul>
-    </aside>
-    
-    
-    <main class="main-content" id="mainContent">
-        
-        <header class="header">
-            <div class="header-left">
-                <button class="toggle-sidebar" id="toggleSidebar">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 class="page-title">Dashboard</h1>
+    </div>
+
+    <div class="nav-section">
+        <div class="section-title"><i class="fas fa-database"></i> MASTER DATA</div>
+        <div class="menu-item" data-menu="kategori">
+            <i class="fas fa-tags"></i><span class="menu-text">Kategori Buku</span>
+        </div>
+        <div class="menu-item" data-menu="koleksi">
+            <i class="fas fa-book"></i><span class="menu-text">Koleksi Buku</span>
+        </div>
+        <div class="menu-item" data-menu="anggota">
+            <i class="fas fa-users"></i><span class="menu-text">Manajemen Anggota</span>
+        </div>
+    </div>
+
+    <div class="nav-section">
+        <div class="section-title"><i class="fas fa-exchange-alt"></i> TRANSAKSI</div>
+        <div class="menu-item" data-menu="peminjaman">
+            <i class="fas fa-hand-holding-heart"></i><span class="menu-text">Peminjaman</span>
+        </div>
+        <div class="menu-item" data-menu="pengembalian">
+            <i class="fas fa-undo-alt"></i><span class="menu-text">Pengembalian</span>
+        </div>
+        <div class="menu-item" data-menu="laporan">
+            <i class="fas fa-chart-line"></i><span class="menu-text">Laporan</span>
+        </div>
+    </div>
+</aside>
+
+<main class="main-panel" id="mainPanel">
+    <div class="top-bar">
+        <div style="display: flex; align-items: center;">
+            <button class="menu-toggle" id="toggleBtn"><i class="fas fa-bars"></i></button>
+            <div class="page-head">Dashboard</div>
+        </div>
+        <div class="right-actions">
+            <div class="admin-badge">
+                <i class="fas fa-user-cog"></i> <span>Admin</span>
             </div>
-            
-            <div class="header-right">
-                <div class="search-box">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" placeholder="Search...">
-                </div>
-                
-                <div class="user-profile">
-                    <div class="user-avatar">JS</div>
-                    <span class="user-name">John Smith</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
+            <div class="avatar">AD</div>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <!-- Welcome Banner sesuai foto -->
+        <div class="welcome-card">
+            <div>
+                <div class="welcome-title">Selamat Datang, Admin!</div>
+                <p style="opacity: 0.85; margin-top: 6px;">Ini ringkasan aktivitas perpustakaan hari ini.</p>
             </div>
-        </header>
-        
-        
-        <div class="content-area">
-            
-            <section class="welcome-banner">
-                <div class="welcome-text">
-                    <h1>Selamat Datang, John!</h1>
-                    <p>Dashboard ini memberikan gambaran tentang kinerja dan aktivitas terbaru.</p>
+            <div class="date-badge" id="liveDate">Wednesday, 08 April 2026</div>
+        </div>
+
+        <!-- Stats Cards sesuai foto -->
+        <div class="stats-grid">
+            <div class="stat-block">
+                <div class="stat-header"><span>Total Anggota</span><i class="fas fa-users stat-icon"></i></div>
+                <div class="stat-number">1</div>
+                <div class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> +12% dari bulan lalu</div>
+            </div>
+            <div class="stat-block">
+                <div class="stat-header"><span>Total Buku</span><i class="fas fa-book stat-icon"></i></div>
+                <div class="stat-number">5</div>
+                <div class="stat-trend"><i class="fas fa-comment" style="color:#d4a373;"></i> <span id="bukuTersedia">202</span> Tersedia</div>
+            </div>
+            <div class="stat-block">
+                <div class="stat-header"><span>Pending Peminjaman</span><i class="fas fa-clock stat-icon"></i></div>
+                <div class="stat-number">0</div>
+                <div class="stat-trend trend-up"><i class="fas fa-check-double"></i> Semua Clear</div>
+            </div>
+            <div class="stat-block">
+                <div class="stat-header"><span>Sedang Dipinjam</span><i class="fas fa-book-reader stat-icon"></i></div>
+                <div class="stat-number">2</div>
+                <div class="stat-trend">Buku sedang dibaca</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions + Recent Activity -->
+        <div class="double-section">
+            <div class="quick-actions-card">
+                <div class="card-title"><i class="fas fa-bolt" style="color:#d4a373;"></i> Quick Actions</div>
+                <div class="action-buttons">
+                    <div class="action-btn" id="tambahBukuBtn"><i class="fas fa-plus-circle"></i> Tambah Buku Baru</div>
+                    <div class="action-btn" id="tambahKategoriBtn"><i class="fas fa-tag"></i> Tambah Kategori</div>
+                    <div class="action-btn" id="kelolaPinjamBtn"><i class="fas fa-hand-holding"></i> Kelola Peminjaman</div>
                 </div>
-                <div class="welcome-date">
-                    <p id="currentDate">Senin, 15 Januari 2024</p>
-                </div>
-            </section>
-            
-            
-            <section class="stats-cards">
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-title">Total Pengguna</div>
-                        <div class="stat-icon"><i class="fas fa-users"></i></div>
-                    </div>
-                    <div class="stat-value" id="totalUsers">2,847</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 12.5% dari bulan lalu
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-title">Total Pendapatan</div>
-                        <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-                    </div>
-                    <div class="stat-value" id="totalRevenue">$42,580</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 8.2% dari bulan lalu
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-title">Konversi</div>
-                        <div class="stat-icon"><i class="fas fa-percentage"></i></div>
-                    </div>
-                    <div class="stat-value" id="conversionRate">3.24%</div>
-                    <div class="stat-change negative">
-                        <i class="fas fa-arrow-down"></i> 1.1% dari bulan lalu
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-title">Waktu Rata-rata</div>
-                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                    </div>
-                    <div class="stat-value" id="avgTime">4m 32s</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 15 detik lebih lama
-                    </div>
-                </div>
-            </section>
-            
-            
-            <section class="charts-container">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3 class="chart-title">Traffic Pengunjung</h3>
-                        <div class="chart-actions">
-                            <button class="chart-btn active" data-period="week">Minggu</button>
-                            <button class="chart-btn" data-period="month">Bulan</button>
-                            <button class="chart-btn" data-period="year">Tahun</button>
-                        </div>
-                    </div>
-                    <div class="chart-placeholder">
-                        <p>Grafik Traffic Pengunjung akan ditampilkan di sini</p>
-                    </div>
-                </div>
-                
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3 class="chart-title">Sumber Traffic</h3>
-                        <div class="chart-actions">
-                            <button class="chart-btn active" data-chart="pie">Pie</button>
-                            <button class="chart-btn" data-chart="bar">Bar</button>
-                            <button class="chart-btn" data-chart="doughnut">Donat</button>
-                        </div>
-                    </div>
-                    <div class="chart-placeholder">
-                        <p>Grafik Sumber Traffic akan ditampilkan di sini</p>
-                    </div>
-                </div>
-            </section>
-            
-            
-            <section class="recent-activity">
-                <h3 class="activity-title">Aktivitas Terbaru</h3>
-                <ul class="activity-list" id="activityList">
-                    
+                <div id="toastMsg" class="toast-msg"></div>
+            </div>
+
+            <div class="recent-card">
+                <div class="card-title"><i class="fas fa-history"></i> Aktivitas Terbaru</div>
+                <ul class="activity-list" id="activityFeed">
+                    <li class="activity-item"><div class="activity-icon"><i class="fas fa-book"></i></div><div><div class="activity-text">Buku "Pemrograman Web" ditambahkan</div><div class="activity-time">10 menit lalu</div></div></li>
+                    <li class="activity-item"><div class="activity-icon"><i class="fas fa-user-plus"></i></div><div><div class="activity-text">Anggota baru: Andi Prasetyo</div><div class="activity-time">1 jam lalu</div></div></li>
+                    <li class="activity-item"><div class="activity-icon"><i class="fas fa-undo-alt"></i></div><div><div class="activity-text">Pengembalian buku "Matematika Dasar"</div><div class="activity-time">2 jam lalu</div></div></li>
                 </ul>
-            </section>
+            </div>
         </div>
-    </main>
-    
-    <script>
-        // DOM Elements
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
-        const toggleSidebarBtn = document.getElementById('toggleSidebar');
-        const menuItems = document.querySelectorAll('.menu-item');
-        const chartPeriodBtns = document.querySelectorAll('.chart-btn[data-period]');
-        const chartTypeBtns = document.querySelectorAll('.chart-btn[data-chart]');
-        const currentDateElement = document.getElementById('currentDate');
-        const activityList = document.getElementById('activityList');
-        
-        // Format tanggal saat ini
-        function updateCurrentDate() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            currentDateElement.textContent = now.toLocaleDateString('id-ID', options);
-        }
-        
-        // Toggle sidebar collapse/expand
-        toggleSidebarBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-            mainContent.classList.toggle('expanded');
-            
-            // Toggle icon
-            const icon = toggleSidebarBtn.querySelector('i');
-            if (sidebar.classList.contains('collapsed')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-chevron-right');
-            } else {
-                icon.classList.remove('fa-chevron-right');
-                icon.classList.add('fa-bars');
-            }
-        });
-        
-        // Set active menu item
-        menuItems.forEach(item => {
-            item.addEventListener('click', () => {
-                menuItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-            });
-        });
-        
-        // Handle chart period buttons
-        chartPeriodBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                chartPeriodBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // In a real app, this would update the chart data
-                console.log(`Changed chart period to: ${btn.dataset.period}`);
-            });
-        });
-        
-        // Handle chart type buttons
-        chartTypeBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                chartTypeBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // In a real app, this would change the chart type
-                console.log(`Changed chart type to: ${btn.dataset.chart}`);
-            });
-        });
-        
-        // Sample activity data
-        const activities = [
-            { icon: 'fa-user-plus', text: 'Pengguna baru "Sarah Johnson" telah terdaftar', time: '10 menit yang lalu' },
-            { icon: 'fa-shopping-cart', text: 'Pesanan #ORD-7842 telah berhasil diproses', time: '30 menit yang lalu' },
-            { icon: 'fa-chart-line', text: 'Laporan bulanan telah dihasilkan dan siap diunduh', time: '2 jam yang lalu' },
-            { icon: 'fa-exclamation-circle', text: 'Peringatan: Terjadi penurunan traffic sebesar 5%', time: '5 jam yang lalu' },
-            { icon: 'fa-check-circle', text: 'Pembaruan sistem berhasil diterapkan', time: '1 hari yang lalu' },
-            { icon: 'fa-envelope', text: 'Email kampanye baru telah dikirim ke 2.500 pelanggan', time: '2 hari yang lalu' }
-        ];
-        
-        // Populate activity list
-        function loadActivities() {
-            activityList.innerHTML = '';
-            
-            activities.forEach(activity => {
-                const li = document.createElement('li');
-                li.className = 'activity-item';
-                
-                li.innerHTML = `
-                    <div class="activity-icon">
-                        <i class="fas ${activity.icon}"></i>
+
+        <!-- Peminjaman Aktif -->
+        <div class="transaction-card">
+            <div class="card-title"><i class="fas fa-book-open"></i> Transaksi Peminjaman Aktif</div>
+            <div id="loanPreview">
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; font-size:13px; color:#8b6b4f;">
+                    <span><strong>Judul Buku</strong></span><span><strong>Anggota</strong></span><span><strong>Tgl Pinjam</strong></span><span><strong>Status</strong></span>
+                </div>
+                <div id="loanListContainer">
+                    <div style="display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid #f0e8df;">
+                        <span>Pemrograman Python</span><span>Dewi Sartika</span><span>05/04/2026</span><span class="badge-pending">Dipinjam</span>
                     </div>
-                    <div class="activity-details">
-                        <div class="activity-text">${activity.text}</div>
-                        <div class="activity-time">${activity.time}</div>
+                    <div style="display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid #f0e8df;">
+                        <span>Database System</span><span>Budi Raharjo</span><span>06/04/2026</span><span class="badge-pending">Dipinjam</span>
                     </div>
+                </div>
+            </div>
+            <hr>
+            <div class="loan-status">
+                <span><i class="fas fa-hourglass-half"></i> Total sedang dipinjam: <strong id="loanCountFooter">2</strong></span>
+                <span class="lihat-link" id="lihatSemuaBtn"><i class="fas fa-arrow-right"></i> Kelola peminjaman →</span>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Data sesuai foto
+    let libraryStats = {
+        totalAnggota: 1,
+        totalBuku: 5,
+        bukuTersedia: 202,
+        pendingPeminjaman: 0,
+        sedangDipinjam: 2
+    };
+
+    let activeLoans = [
+        { book: "Pemrograman Python", member: "Dewi Sartika", date: "05/04/2026", status: "Dipinjam" },
+        { book: "Database System", member: "Budi Raharjo", date: "06/04/2026", status: "Dipinjam" }
+    ];
+
+    let activities = [
+        { text: "Buku \"Pemrograman Web\" ditambahkan", time: "10 menit lalu", icon: "fa-book" },
+        { text: "Anggota baru: Andi Prasetyo", time: "1 jam lalu", icon: "fa-user-plus" },
+        { text: "Pengembalian buku \"Matematika Dasar\"", time: "2 jam lalu", icon: "fa-undo-alt" }
+    ];
+
+    function updateStatsUI() {
+        document.getElementById('bukuTersedia').innerText = libraryStats.bukuTersedia;
+        document.getElementById('loanCountFooter').innerText = libraryStats.sedangDipinjam;
+    }
+
+    function renderLoans() {
+        const container = document.getElementById('loanListContainer');
+        if(activeLoans.length === 0) {
+            container.innerHTML = '<div style="padding: 24px; text-align:center; color:#a88b6e;">Tidak ada peminjaman aktif</div>';
+            libraryStats.sedangDipinjam = 0;
+        } else {
+            container.innerHTML = '';
+            activeLoans.forEach(loan => {
+                const row = document.createElement('div');
+                row.style.display = 'flex';
+                row.style.justifyContent = 'space-between';
+                row.style.padding = '12px 0';
+                row.style.borderTop = '1px solid #f0e8df';
+                row.innerHTML = `
+                    <span>${loan.book}</span>
+                    <span>${loan.member}</span>
+                    <span>${loan.date}</span>
+                    <span class="badge-pending">${loan.status}</span>
                 `;
-                
-                activityList.appendChild(li);
+                container.appendChild(row);
             });
+            libraryStats.sedangDipinjam = activeLoans.length;
         }
-        
-        // Simulate real-time updates for stats
-        function updateStats() {
-            // Simulate changing numbers
-            const users = document.getElementById('totalUsers');
-            const revenue = document.getElementById('totalRevenue');
-            const conversion = document.getElementById('conversionRate');
-            const avgTime = document.getElementById('avgTime');
-            
-            // Animate numbers (simulated)
-            let userCount = 2847;
-            let revenueCount = 42580;
-            
-            // In a real app, these would be fetched from an API
-            setInterval(() => {
-                // Random small fluctuations
-                userCount += Math.floor(Math.random() * 5) - 2;
-                revenueCount += Math.floor(Math.random() * 20) - 10;
-                
-                users.textContent = userCount.toLocaleString();
-                revenue.textContent = `$${revenueCount.toLocaleString()}`;
-            }, 5000);
-        }
-        
-        // Initialize the dashboard
-        function initDashboard() {
-            updateCurrentDate();
-            loadActivities();
-            updateStats();
-            
-            // For mobile, close sidebar by default
-            if (window.innerWidth <= 768) {
-                sidebar.classList.add('collapsed');
-                sidebar.classList.remove('mobile-open');
-                mainContent.classList.add('expanded');
-                
-                const icon = toggleSidebarBtn.querySelector('i');
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-chevron-right');
-            }
-            
-            // Mobile sidebar toggle
-            if (window.innerWidth <= 768) {
-                toggleSidebarBtn.addEventListener('click', () => {
-                    sidebar.classList.toggle('mobile-open');
-                });
-            }
-        }
-        
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', initDashboard);
-        
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('mobile-open');
-            }
+        updateStatsUI();
+    }
+
+    function addActivity(text) {
+        activities.unshift({ text: text, time: "Baru saja", icon: "fa-bell" });
+        if(activities.length > 5) activities.pop();
+        renderActivities();
+        const toast = document.getElementById('toastMsg');
+        toast.innerHTML = `✓ ${text}`;
+        setTimeout(() => { if(toast) toast.innerHTML = ''; }, 2500);
+    }
+
+    function renderActivities() {
+        const feed = document.getElementById('activityFeed');
+        feed.innerHTML = '';
+        activities.slice(0,5).forEach(act => {
+            const li = document.createElement('li');
+            li.className = 'activity-item';
+            li.innerHTML = `
+                <div class="activity-icon"><i class="fas ${act.icon || 'fa-book'}"></i></div>
+                <div><div class="activity-text">${act.text}</div><div class="activity-time">${act.time}</div></div>
+            `;
+            feed.appendChild(li);
         });
-    </script>
+    }
+
+    function handleTambahBuku() {
+        libraryStats.totalBuku += 1;
+        libraryStats.bukuTersedia += 1;
+        updateStatsUI();
+        addActivity("Buku baru ditambahkan: 'React JS Modern'");
+        // Update angka total buku di card
+        const totalBukuElem = document.querySelector('.stats-grid .stat-block:nth-child(2) .stat-number');
+        if(totalBukuElem) totalBukuElem.innerText = libraryStats.totalBuku;
+    }
+
+    function handleTambahKategori() {
+        addActivity("Kategori baru ditambahkan: 'Teknologi & AI'");
+    }
+
+    function handleKelolaPeminjaman() {
+        addActivity("Membuka halaman kelola peminjaman");
+        alert("📚 Kelola Peminjaman\nSaat ini " + activeLoans.length + " buku sedang dipinjam.");
+    }
+
+    function updateDateDisplay() {
+        const dateElem = document.getElementById('liveDate');
+        const now = new Date();
+        const englishDate = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        if(dateElem) dateElem.innerText = englishDate;
+    }
+
+    // Sidebar Toggle
+    const sidebar = document.getElementById('sidebar');
+    const mainPanel = document.getElementById('mainPanel');
+    const toggleBtn = document.getElementById('toggleBtn');
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainPanel.classList.toggle('expanded');
+        if(window.innerWidth <= 768) sidebar.classList.toggle('mobile-open');
+    });
+
+    // Menu click
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            item.classList.add('active');
+            const menu = item.getAttribute('data-menu');
+            addActivity(`Navigasi ke ${menu || 'menu'}`);
+        });
+    });
+
+    // Action buttons
+    document.getElementById('tambahBukuBtn')?.addEventListener('click', handleTambahBuku);
+    document.getElementById('tambahKategoriBtn')?.addEventListener('click', handleTambahKategori);
+    document.getElementById('kelolaPinjamBtn')?.addEventListener('click', handleKelolaPeminjaman);
+    document.getElementById('lihatSemuaBtn')?.addEventListener('click', () => {
+        addActivity("Membuka manajemen peminjaman");
+        alert("📖 Halaman manajemen peminjaman dan pengembalian.");
+    });
+
+    // Inisialisasi
+    function init() {
+        updateStatsUI();
+        renderLoans();
+        renderActivities();
+        updateDateDisplay();
+        // Set total buku awal
+        const totalBukuElem = document.querySelector('.stats-grid .stat-block:nth-child(2) .stat-number');
+        if(totalBukuElem) totalBukuElem.innerText = "5";
+    }
+    init();
+
+    window.addEventListener('resize', () => {
+        if(window.innerWidth > 768) sidebar.classList.remove('mobile-open');
+    });
+</script>
 </body>
 </html>
